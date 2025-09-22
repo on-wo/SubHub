@@ -1,0 +1,25 @@
+{
+  "name": "subhub",
+  "version": "1.0.0",
+  "description": "简洁机场订阅管理面板",
+  "main": "src/worker.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler publish",
+    "test": "jest"
+  },
+  "dependencies": {
+    "hono": "^3.0.0",
+    "jsonwebtoken": "^9.0.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^3.0.0",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-jest": "^29.0.0"
+  },
+  "author": "",
+  "license": "MIT"
+}

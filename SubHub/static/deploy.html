@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SubHub 部署向导</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8 max-w-2xl">
+        <div class="bg-white rounded-lg shadow p-6">
+            <h1 class="text-2xl font-bold mb-6">SubHub 部署向导</h1>
+            
+            <div class="space-y-8">
+                <!-- 步骤1：Fork 项目 -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤1：Fork 项目</h2>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>点击 <a href="https://github.com/your-repo/subhub/fork" class="text-blue-600 hover:underline" target="_blank">这里</a> Fork 项目到你的 GitHub</li>
+                        <li>等待 Fork 完成</li>
+                    </ol>
+                </div>
+
+                <!-- 步骤2：创建 Cloudflare 账号 -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤2：准备 Cloudflare 账号</h2>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>访问 <a href="https://dash.cloudflare.com/sign-up" class="text-blue-600 hover:underline" target="_blank">Cloudflare</a> 注册账号</li>
+                        <li>登录到 Cloudflare 控制台</li>
+                        <li>点击 "Workers & Pages"</li>
+                    </ol>
+                </div>
+
+                <!-- 步骤3：配置 Worker -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤3：创建 Worker</h2>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>在 Workers & Pages 中点击 "Create application"</li>
+                        <li>选择 "Pages" 并关联你的 GitHub 仓库</li>
+                        <li>选择你刚 Fork 的 subhub 仓库</li>
+                        <li>项目名称填写 "subhub"</li>
+                        <li>生产分支选择 "main"</li>
+                    </ol>
+                </div>
+
+                <!-- 步骤4：创建 KV -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤4：创建 KV 存储</h2>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>在 Workers & Pages 中点击你的 subhub 项目</li>
+                        <li>点击 "Settings" > "KV"</li>
+                        <li>点击 "Create a KV namespace"</li>
+                        <li>名称填写 "USERS_KV"</li>
+                        <li>复制生成的 KV ID（下一步要用）</li>
+                    </ol>
+                </div>
+
+                <!-- 步骤5：配置环境变量 -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤5：配置环境变量</h2>
+                    <div class="mb-4">
+                        <p class="mb-2">在下方生成配置，然后复制到 Cloudflare 的环境变量中：</p>
+                        <div class="flex gap-4">
+                            <input type="text" id="adminKey" placeholder="设置管理员密码" class="flex-1 border rounded px-3 py-2">
+                            <button onclick="generateConfig()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">生成配置</button>
+                        </div>
+                    </div>
+                    
+                    <div id="config" class="hidden">
+                        <p class="font-semibold mb-2">复制以下内容到环境变量：</p>
+                        <div class="bg-gray-100 p-4 rounded space-y-2">
+                            <div>
+                                <span class="font-mono">ADMIN_KEY</span>: <span id="showAdminKey" class="font-mono"></span>
+                            </div>
+                            <div>
+                                <span class="font-mono">JWT_SECRET</span>: <span id="showJwtSecret" class="font-mono"></span>
+                            </div>
+                        </div>
+                        <ol class="list-decimal list-inside space-y-2 mt-4">
+                            <li>在 Cloudflare 点击 "Settings" > "Environment variables"</li>
+                            <li>添加上面两个环境变量</li>
+                            <li>在 "KV namespace bindings" 中添加 USERS_KV，选择刚创建的 namespace</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- 步骤6：完成部署 -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-4">步骤6：完成部署</h2>
+                    <ol class="list-decimal list-inside space-y-2">
+                        <li>点击 "Save and Deploy"</li>
+                        <li>等待部署完成</li>
+                        <li>访问分配的域名 (*.pages.dev)</li>
+                        <li>使用设置的管理员密码登录</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateConfig() {
+            const adminKey = document.getElementById('adminKey').value;
+            if (!adminKey) {
+                alert('请输入管理员密码！');
+                return;
+            }
+
+            // 生成随机 JWT 密钥
+            const jwtSecret = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+                .map(b => b.toString(16).padStart(2, '0'))
+                .join('');
+
+            document.getElementById('showAdminKey').textContent = adminKey;
+            document.getElementById('showJwtSecret').textContent = jwtSecret;
+            document.getElementById('config').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

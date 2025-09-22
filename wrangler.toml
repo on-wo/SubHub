@@ -4,10 +4,11 @@ compatibility_date = "2023-01-01"
 
 # KV 命名空间
 kv_namespaces = [
-  { binding = "USERS_KV", id = "your-kv-id-here" }
+  { binding = "USERS_KV", id = "5c8fc50aafb7418e8bde8ec1870ad976" }
 ]
 
 # 环境变量（本地开发用）
 [vars]
-ADMIN_KEY = "changeme"
-JWT_SECRET = "changeme"
+ADMIN_KEY = "aloneicymoon"
+
+JWT_SECRET = "dbce9f60d1a8266c9144df3942e7f038"
